@@ -1,4 +1,4 @@
-package com.pengliang.common.smart;
+package com.ebo.common.smart;
 
 import lombok.Data;
 
@@ -14,9 +14,8 @@ public interface AddressDataLoader {
 
     @Data
     class Address {
-        private Serializable id;
+        private String id;
         private String name;
-        private String fullName;
         private String code;
         private Serializable parentId;
         private List<Address> children;

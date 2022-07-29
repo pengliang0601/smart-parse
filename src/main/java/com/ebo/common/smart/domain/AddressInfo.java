@@ -1,5 +1,6 @@
-package com.pengliang.common.smart.domain;
+package com.ebo.common.smart.domain;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class Address {
+public class AddressInfo {
 
 
     /**
@@ -43,4 +44,10 @@ public class Address {
      * 详细地址
      */
     private String address;
+
+    private String areaId;
+
+    public boolean isEmpty() {
+        return StrUtil.isAllEmpty(province, provinceCode, city, cityCode, county, countyCode, street, streetCode, address) && areaId == null;
+    }
 }

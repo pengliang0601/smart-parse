@@ -1,4 +1,4 @@
-package com.pengliang.common.smart;
+package com.ebo.common.smart;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
@@ -10,11 +10,17 @@ import java.util.List;
 
 public class LocalDataAddressDataLoader implements AddressDataLoader {
 
-    @Override
-    public List<Address> loadData() {
+    private final List<Address> addressList;
+
+    public LocalDataAddressDataLoader() {
         URL url = ResourceUtil.getResource("areaData.json");
         String jsonData = FileUtil.readString(url, Charset.defaultCharset());
-        return JSONUtil.parseArray(jsonData).toList(Address.class);
+        this.addressList = JSONUtil.parseArray(jsonData).toList(Address.class);
+    }
+
+    @Override
+    public List<Address> loadData() {
+        return addressList;
     }
 
 }

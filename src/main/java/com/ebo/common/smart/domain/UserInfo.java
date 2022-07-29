@@ -1,9 +1,9 @@
-package com.pengliang.common.smart.domain;
+package com.ebo.common.smart.domain;
 
 import lombok.Data;
 
 @Data
-public class UserInfo extends Address{
+public class UserInfo extends AddressInfo {
 
     /**
      * 姓名
