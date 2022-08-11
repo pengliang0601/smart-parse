@@ -19,7 +19,10 @@ import java.util.regex.Pattern;
 
 public class SmartParse {
 
-    private final Pattern pattern = Pattern.compile("^[省市区县区州街道镇乡特别行政自治]+");
+    /**
+     * 前缀字符特殊处理，匹配时候会自动处理掉符合正则的文字
+     */
+    private Pattern pattern = Pattern.compile("^[省市区县州街道镇乡特别行政自治]+");
     private final AddressDataLoader addressDataLoader;
 
 
@@ -31,9 +34,12 @@ public class SmartParse {
     /**
      * 解析用户地址信息
      *
-     * @param text
+     * @param text 地址信息
      */
     public UserInfo parseUserInfo(String text) {
+        if (StrUtil.isBlank(text)) {
+            return null;
+        }
 
         text = text.replace(" 详细地址: ", "");
         StringBuilder matchText = new StringBuilder();
@@ -53,7 +59,6 @@ public class SmartParse {
 
         }
         text = matchText.toString();
-
 
         UserInfo userInfo = new UserInfo();
         String mobile = matchMobile(text);
@@ -118,8 +123,11 @@ public class SmartParse {
      */
     public AddressInfo parseAddressInfo(String text) {
 
-        List<AddressDataLoader.Address> addressList = addressDataLoader.loadData();
+        if (StrUtil.isBlank(text)) {
+            return null;
+        }
 
+        List<AddressDataLoader.Address> addressList = addressDataLoader.loadData();
         AddressInfo addressInfo = new AddressInfo();
 
         text = filterStr(text);
@@ -137,8 +145,8 @@ public class SmartParse {
     /**
      * 匹配地址
      *
-     * @param addressList
-     * @param text
+     * @param addressList 地址列表
+     * @param text 匹配的地址信息
      */
     private AddressInfo matchAddress(List<AddressDataLoader.Address> addressList, String text) {
 
@@ -298,6 +306,13 @@ public class SmartParse {
     }
 
 
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(Pattern pattern) {
+        this.pattern = pattern;
+    }
 }
 
 
