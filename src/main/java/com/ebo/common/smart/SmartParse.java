@@ -15,14 +15,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class SmartParse {
 
-    private AddressDataLoader addressDataLoader;
+    private final Pattern pattern = Pattern.compile("^[省市区县区州街道镇乡特别行政自治]+");
+    private final AddressDataLoader addressDataLoader;
+
 
     public SmartParse(AddressDataLoader addressDataLoader) {
         this.addressDataLoader = addressDataLoader;
     }
+
 
     /**
      * 解析用户地址信息
@@ -49,7 +53,6 @@ public class SmartParse {
 
         }
         text = matchText.toString();
-
 
 
         UserInfo userInfo = new UserInfo();
@@ -80,6 +83,7 @@ public class SmartParse {
 
     /**
      * 匹配手机号码
+     *
      * @param text
      * @return
      */
@@ -159,6 +163,7 @@ public class SmartParse {
             MatchData matchData = getTheOptimalMatch(matchProvince);
             setMatchInfo(info, matchData);
             text = text.replaceFirst(matchData.getMatchValue(), "");
+            text = ReUtil.replaceFirst(pattern, text, "");
         }
 
         //市查找
@@ -182,11 +187,8 @@ public class SmartParse {
             MatchData matchData = getTheOptimalMatch(matchCity);
             setMatchInfo(info, matchData);
             text = text.replaceFirst(matchData.getMatchValue(), "");
-
             // 如果是市开头的，去掉
-            if (text.startsWith("市")) {
-                text = text.replaceFirst("市", "");
-            }
+            text = ReUtil.replaceFirst(pattern, text, "");
         }
 
         //区县查找
@@ -220,6 +222,7 @@ public class SmartParse {
             MatchData matchData = getTheOptimalMatch(matchCounty);
             setMatchInfo(info, matchData);
             text = text.replaceFirst(matchData.getMatchValue(), "");
+            text = ReUtil.replaceFirst(pattern, text, "");
         }
 
         //街道查找
@@ -261,6 +264,7 @@ public class SmartParse {
             MatchData matchData = getTheOptimalMatch(matchStreet);
             setMatchInfo(info, matchData);
             text = text.replaceFirst(matchData.getMatchValue(), "");
+            text = ReUtil.replaceFirst(pattern, text, "");
         }
         if (!address.equals(text)) {
             info.setAddress(text);
