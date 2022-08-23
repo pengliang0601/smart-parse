@@ -67,7 +67,7 @@ public class SmartParse {
             text = text.replace(mobile, "");
         }
 
-        text = filterStr(text);
+        //text = filterStr(text);
         List<AddressDataLoader.Address> addressList = addressDataLoader.loadData();
 
         List<String> split = StrUtil.split(text, " ");
@@ -130,7 +130,7 @@ public class SmartParse {
         List<AddressDataLoader.Address> addressList = addressDataLoader.loadData();
         AddressInfo addressInfo = new AddressInfo();
 
-        text = filterStr(text);
+        //text = filterStr(text);
         List<String> split = StrUtil.split(text, " ");
         for (String str : split) {
             AddressInfo info = matchAddress(addressList, str);
