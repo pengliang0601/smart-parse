@@ -334,7 +334,7 @@ class MatchData {
         }
         if (city != null) {
             this.city = city.getName();
-            this.countyCode = city.getCode();
+            this.cityCode = city.getCode();
             this.areaId = city.getId();
         }
         if (county != null) {
