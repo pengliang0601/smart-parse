@@ -146,7 +146,7 @@ public class SmartParse {
      * 匹配地址
      *
      * @param addressList 地址列表
-     * @param text 匹配的地址信息
+     * @param text        匹配的地址信息
      */
     private AddressInfo matchAddress(List<AddressDataLoader.Address> addressList, String text) {
 
@@ -236,7 +236,7 @@ public class SmartParse {
         //街道查找
         List<MatchData> matchStreet = new ArrayList<>(); //粗略匹配上的街道查
         for (int endIndex = 0; endIndex < text.length(); endIndex++) {
-            matchAddress = StrUtil.subWithLength(text, 0, endIndex + 3);
+            matchAddress = StrUtil.subWithLength(text, 0, endIndex + 2);
 
             for (AddressDataLoader.Address province : addressList) {
                 if (province.getChildren() == null) {
