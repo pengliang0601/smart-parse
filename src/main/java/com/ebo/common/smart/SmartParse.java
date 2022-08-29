@@ -46,8 +46,14 @@ public class SmartParse {
         // 先根据空白符分割，如果空白符分割包含：号，则默认取最后那一段
         for (String str : StrSplitter.splitByRegex(text, "[\\n\\r]", 0, true, true)) {
             str = str.replace(": ", ":");
+            if (StrUtil.isBlank(str)) {
+                continue;
+            }
             for (String s : str.split(" ")) {
                 List<String> strings = StrSplitter.splitByRegex(s, "[:：]", 0, true, true);
+                if (CollUtil.isNotEmpty(strings)) {
+                    continue;
+                }
                 if (strings.size() == 2) {
                     matchText.append(strings.get(1));
                 } else {
