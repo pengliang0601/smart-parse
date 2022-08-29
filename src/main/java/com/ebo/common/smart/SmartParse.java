@@ -51,7 +51,7 @@ public class SmartParse {
             }
             for (String s : str.split(" ")) {
                 List<String> strings = StrSplitter.splitByRegex(s, "[:：]", 0, true, true);
-                if (CollUtil.isNotEmpty(strings)) {
+                if (CollUtil.isEmpty(strings)) {
                     continue;
                 }
                 if (strings.size() == 2) {
