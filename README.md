@@ -4,6 +4,9 @@
 用于根据文本自动解析出收货信息。 \
 部分解析逻辑参考了：https://github.com/wzc570738205/smartParsePro
 
+## 在线演示
+[演示地址](http://114.132.48.33/)
+
 ## 使用
 ### 解析用户地址信息-parseUserInfo
 ```java
