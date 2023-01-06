@@ -81,7 +81,12 @@ public class SmartParse {
             if (StrUtil.isBlank(str)) {
                 continue;
             }
-            AddressInfo addressInfo = matchAddress(addressList, str);
+            AddressInfo addressInfo = null;
+            // 大于6才能判断是一串地址信息
+            if (str.length() > 6) {
+                addressInfo = matchAddress(addressList, str);
+            }
+
             if (addressInfo == null || addressInfo.isEmpty()) {
                 userInfo.setName(str);
             } else {
