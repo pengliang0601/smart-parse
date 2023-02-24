@@ -22,17 +22,17 @@ class SmartParseTest {
 
 
         List<String> textList = new ArrayList<>();
-        textList.add("姓名：彭大哥 电话：15521950357 地址：四川南充市营山县城南镇顺安街60号楼1901");
-        textList.add("姓名：彭大哥 电话：15521950357 所在地区: 四川南充市营山县城南镇 详细地址: 顺安街60号楼1901");
-        textList.add("收货人: 彭大哥 手机号码: 15521950357 所在地区: 四川南充市营山县城南镇 详细地址: 顺安街60号楼1901");
-        textList.add("四川南充市营山县城南镇顺安街60号楼1901 15521950357 彭大哥");
-        textList.add("四川省凉山市会理县民族实验中学黎溪镇中厂村9组");
-        textList.add("四川省凉山州市德昌县德州镇角半七社");
+        //textList.add("姓名：彭大哥 电话：15521950357 地址：四川南充市营山县城南镇顺安街60号楼1901");
+        //textList.add("姓名：彭大哥 电话：15521950357 所在地区: 四川南充市营山县城南镇 详细地址: 顺安街60号楼1901");
+        //textList.add("收货人: 彭大哥 手机号码: 15521950357 所在地区: 四川南充市营山县城南镇 详细地址: 顺安街60号楼1901");
+        //textList.add("四川南充市营山县城南镇顺安街60号楼1901 15521950357 彭大哥");
+        //textList.add("四川省凉山市会理县民族实验中学黎溪镇中厂村9组");
+        //textList.add("四川省凉山州市德昌县德州镇角半七社");
+        textList.add("萧，13021121177，[黑龙江哈尔滨市南岗区哈西街道]巴黎第九区16-1-1001");
         for (String text : textList) {
             UserInfo userInfo = smartParse.parseUserInfo(text);
             System.out.println(JSONUtil.toJsonStr(userInfo));
         }
-
 
     }
 
@@ -40,11 +40,12 @@ class SmartParseTest {
     void parseAddressInfo() {
 
         //String text = "新疆阿克苏温宿县博孜墩【柯尔克孜族乡吾斯塘博村一组306号 800-8585222 马云";
-        String text = "新疆阿克苏温宿县博孜墩柯尔克孜族乡吾斯塘博村一组306号";
+        //String text = "新疆阿克苏温宿县博孜墩柯尔克孜族乡吾斯塘博村一组306号";
         //String text = "新疆阿克苏温宿县博孜墩柯尔克孜族乡吾斯塘博村一组306号";
         //String text = "天津市滨海新区北塘街道塘沽区心贻湾2-1402";
         //String text = "13593464918 马云\n";
-        AddressInfo addressInfo = smartParse.parseAddressInfo(text);
+        String text = "河南周口西华县长平路东桥";
+        AddressInfo addressInfo = smartParse.parseAddressInfo(text, 2);
         System.out.println(JSONUtil.toJsonStr(addressInfo));
     }
 

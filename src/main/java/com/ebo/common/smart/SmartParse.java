@@ -31,12 +31,16 @@ public class SmartParse {
     }
 
 
+    public UserInfo parseUserInfo(String text) {
+        return parseUserInfo(text, null);
+    }
+
     /**
      * 解析用户地址信息
      *
      * @param text 地址信息
      */
-    public UserInfo parseUserInfo(String text) {
+    public UserInfo parseUserInfo(String text, Integer level) {
         if (StrUtil.isBlank(text)) {
             return null;
         }
@@ -49,7 +53,7 @@ public class SmartParse {
             if (StrUtil.isBlank(str)) {
                 continue;
             }
-            for (String s : StrSplitter.splitByRegex(str, "，| ",0,true,true)) {
+            for (String s : StrSplitter.splitByRegex(str, "，| ", 0, true, true)) {
                 List<String> strings = StrSplitter.splitByRegex(s, "[:：]", 0, true, true);
                 if (CollUtil.isEmpty(strings)) {
                     continue;
@@ -84,7 +88,7 @@ public class SmartParse {
             AddressInfo addressInfo = null;
             // 大于6才能判断是一串地址信息
             if (str.length() > 6) {
-                addressInfo = matchAddress(addressList, str);
+                addressInfo = matchAddress(addressList, str, level);
             }
             if (str.length() <= 6) {
                 userInfo.setName(str);
@@ -129,10 +133,15 @@ public class SmartParse {
         return ReUtil.getGroup0(RegexPool.MOBILE_MO, text);
     }
 
+    public AddressInfo parseAddressInfo(String text) {
+        return parseAddressInfo(text, null);
+    }
+
     /**
      * 解析地址
+     * @param level 匹配级别。从0开始，可以选择只匹配到第几级，为null则忽略
      */
-    public AddressInfo parseAddressInfo(String text) {
+    public AddressInfo parseAddressInfo(String text, Integer level) {
 
         if (StrUtil.isBlank(text)) {
             return null;
@@ -144,7 +153,7 @@ public class SmartParse {
         //text = filterStr(text);
         List<String> split = StrUtil.split(text, " ");
         for (String str : split) {
-            AddressInfo info = matchAddress(addressList, str);
+            AddressInfo info = matchAddress(addressList, str, level);
             if (info != null && !info.isEmpty()) {
                 BeanUtil.copyProperties(info, addressInfo, CopyOptions.create().ignoreNullValue());
             }
@@ -158,16 +167,18 @@ public class SmartParse {
      *
      * @param addressList 地址列表
      * @param text        匹配的地址信息
+     * @param level 匹配级别。从0开始，可以选择只匹配到第几级，为null则忽略
      */
-    private AddressInfo matchAddress(List<AddressDataLoader.Address> addressList, String text) {
+    private AddressInfo matchAddress(List<AddressDataLoader.Address> addressList, String text, Integer level) {
 
         if (StrUtil.isBlank(text)) {
             return null;
         }
         AddressInfo info = new AddressInfo();
-        String address = text;
         // 清除特殊字符
         text = ReUtil.replaceAll(text, "[^\u4e00-\u9fa5A-Za-z0-9-]", "");
+
+        String address = text;
 
         String matchAddress = "";
         List<MatchData> matchProvince = new ArrayList<>();
@@ -185,6 +196,10 @@ public class SmartParse {
             setMatchInfo(info, matchData);
             text = text.replaceFirst(matchData.getMatchValue(), "");
             text = ReUtil.replaceFirst(pattern, text, "");
+        }
+        if (level != null && level == 0) {
+            setAddress(matchProvince, address, text, info);
+            return info;
         }
 
         //市查找
@@ -211,6 +226,12 @@ public class SmartParse {
             // 如果是市开头的，去掉
             text = ReUtil.replaceFirst(pattern, text, "");
         }
+
+        if (level != null && level == 1) {
+            setAddress(matchProvince, address, text, info);
+            return info;
+        }
+
 
         //区县查找
         List<MatchData> matchCounty = new ArrayList<>(); //粗略匹配上的区县
@@ -244,6 +265,11 @@ public class SmartParse {
             setMatchInfo(info, matchData);
             text = text.replaceFirst(matchData.getMatchValue(), "");
             text = ReUtil.replaceFirst(pattern, text, "");
+        }
+
+        if (level != null && level == 2) {
+            setAddress(matchProvince, address, text, info);
+            return info;
         }
 
         //街道查找
@@ -287,10 +313,15 @@ public class SmartParse {
             text = text.replaceFirst(matchData.getMatchValue(), "");
             text = ReUtil.replaceFirst(pattern, text, "");
         }
-        if (matchStreet.isEmpty() || !address.equals(text)) {
+        setAddress(matchStreet, address, text, info);
+        return info;
+    }
+
+
+    private void setAddress(List<MatchData> matchList, String address, String text, AddressInfo info) {
+        if (matchList.isEmpty() || !address.equals(text)) {
             info.setAddress(text);
         }
-        return info;
     }
 
     /**
