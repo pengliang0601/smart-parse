@@ -49,7 +49,7 @@ public class SmartParse {
             if (StrUtil.isBlank(str)) {
                 continue;
             }
-            for (String s : str.split(" ")) {
+            for (String s : StrSplitter.splitByRegex(str, "，| ",0,true,true)) {
                 List<String> strings = StrSplitter.splitByRegex(s, "[:：]", 0, true, true);
                 if (CollUtil.isEmpty(strings)) {
                     continue;
@@ -86,12 +86,12 @@ public class SmartParse {
             if (str.length() > 6) {
                 addressInfo = matchAddress(addressList, str);
             }
-
-            if (addressInfo == null || addressInfo.isEmpty()) {
+            if (str.length() <= 6) {
                 userInfo.setName(str);
             } else {
                 BeanUtil.copyProperties(addressInfo, userInfo, CopyOptions.create().ignoreNullValue());
             }
+
         }
         return userInfo;
     }
@@ -166,6 +166,8 @@ public class SmartParse {
         }
         AddressInfo info = new AddressInfo();
         String address = text;
+        // 清除特殊字符
+        text = ReUtil.replaceAll(text, "[^\u4e00-\u9fa5A-Za-z0-9-]", "");
 
         String matchAddress = "";
         List<MatchData> matchProvince = new ArrayList<>();
@@ -285,7 +287,7 @@ public class SmartParse {
             text = text.replaceFirst(matchData.getMatchValue(), "");
             text = ReUtil.replaceFirst(pattern, text, "");
         }
-        if (!address.equals(text)) {
+        if (matchStreet.isEmpty() || !address.equals(text)) {
             info.setAddress(text);
         }
         return info;
