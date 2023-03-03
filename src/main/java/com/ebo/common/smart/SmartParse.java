@@ -11,7 +11,6 @@ import com.ebo.common.smart.parser.NameParser;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,28 +21,17 @@ public class SmartParse {
      */
     public static final String PLACE_NAME_CHAR = "省市区县州街道镇乡特别行政自治";
 
-    /**
-     * 前缀字符特殊处理，匹配时候会自动处理掉符合正则的文字
-     */
-    private Pattern pattern = Pattern.compile("^["+PLACE_NAME_CHAR+"]+");
-    private AddressDataLoader addressDataLoader;
-
-    private MobileParser mobileParser = new MobileParser();
-    private AreaParse areaParse;
-    private NameParser nameParser = new NameParser();
+    private final MobileParser mobileParser = new MobileParser();
+    private final AreaParse areaParse;
+    private final NameParser nameParser = new NameParser();
 
 
     public SmartParse(AddressDataLoader addressDataLoader) {
-        this.addressDataLoader = addressDataLoader;
         areaParse = new AreaParse(addressDataLoader);
     }
 
-
-
     /**
      * 分割文本：根据空格特殊符出电话、姓名、地址信息
-     *
-     * @return
      */
     public List<String> splitText(TextHolder textHolder) {
 
