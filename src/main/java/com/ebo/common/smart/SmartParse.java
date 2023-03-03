@@ -3,6 +3,7 @@ package com.ebo.common.smart;
 import cn.hutool.core.text.StrSplitter;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ebo.common.smart.domain.AddressInfo;
 import com.ebo.common.smart.domain.UserInfo;
 import com.ebo.common.smart.parser.AreaParse;
 import com.ebo.common.smart.parser.MobileParser;
@@ -99,4 +100,12 @@ public class SmartParse {
         return userInfo;
     }
 
+    public AddressInfo parseAddressInfo(String text) {
+        UserInfo userInfo = new UserInfo();
+        TextHolder textHolder = new TextHolder(text);
+        List<String> textList = splitText(textHolder);
+        // 解析地区址
+        areaParse.parse(userInfo, textList, textHolder);
+        return userInfo;
+    }
 }
