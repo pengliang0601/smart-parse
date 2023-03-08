@@ -16,16 +16,17 @@ class SmartParseTest {
     void parseUserInfo() {
 
         List<String> textList = new ArrayList<>();
-        textList.add("四川南充市营山县城南镇顺安街60号楼1901 15521950357 彭大哥");
-        textList.add("四川省凉山市会理县民族实验中学黎溪镇中厂村9组");
-        textList.add("四川省凉山州市德昌县德州镇角半七社");
-        textList.add("萧，13021121177，[黑龙江哈尔滨市南岗区哈西街道]巴黎第九区16-1-1001");
-        textList.add("王婷婷 ，18639117616 ， ，河南省 许昌市 长葛市 明珠花园10号楼101室");
-        textList.add("王婷婷 ，18639712616 ， ，河南-新乡市-长垣市-恼里镇10号楼101室");
-        textList.add("收货人: 唐菊\n" +
-                "手机号码: 15508153912\n" +
-                "所在地区: 四川省南充市营山县城南街道\n" +
-                "详细地址: 宝珍花园顺安街21号楼801");
+//        textList.add("四川南充市营山县城南镇顺安街60号楼1901 15521950357 彭大哥");
+//        textList.add("四川省凉山市会理县民族实验中学黎溪镇中厂村9组");
+//        textList.add("四川省凉山州市德昌县德州镇角半七社");
+//        textList.add("萧，13021121177，[黑龙江哈尔滨市南岗区哈西街道]巴黎第九区16-1-1001");
+//        textList.add("王婷婷 ，18639117616 ， ，河南省 许昌市 长葛市 明珠花园10号楼101室");
+//        textList.add("王婷婷 ，18639712616 ， ，河南-新乡市-长垣市-恼里镇10号楼101室");
+//        textList.add("收货人: 唐菊\n" +
+//                "手机号码: 15508153912\n" +
+//                "所在地区: 四川省南充市营山县城南街道\n" +
+//                "详细地址: 宝珍花园顺安街21号楼801");
+        textList.add("福建省莆田市仙游县发送到发斯蒂芬");
         for (String text : textList) {
             UserInfo userInfo = smartParse.parseUserInfo(text);
             System.out.println(JSONUtil.toJsonStr(userInfo));

@@ -111,6 +111,10 @@ public class AreaParse {
             userInfo.setStreet(data.getName());
             userInfo.setStreetCode(data.getCode());
         }
+        if (userInfo.getLevel() < result.getLevel()) {
+            userInfo.setLevel(result.getLevel());
+            userInfo.setAreaId(data.getId());
+        }
         fillUserInfo(userInfo, result.getParent());
     }
 
