@@ -174,9 +174,14 @@ public class AreaParse {
             return Collections.emptyList();
         }
 
-        if (addressList.size() == 1) {
+        // 重庆有重庆城区和县区，所以这里size<=2
+        if (addressList.size() <= 2 ) {
             // 取前两个字
-            return ListUtil.of(new AlternativeData(addressList.get(0), parentData, level, ""));
+            List<AlternativeData> data = new ArrayList<>();
+            for (AddressDataLoader.Address address : addressList) {
+                data.add(new AlternativeData(address, parentData, level, ""));
+            }
+            return data;
         }
 
         if (parentData != null) {

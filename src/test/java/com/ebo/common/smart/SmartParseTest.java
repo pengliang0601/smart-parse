@@ -26,7 +26,7 @@ class SmartParseTest {
 //                "手机号码: 15508153912\n" +
 //                "所在地区: 四川省南充市营山县城南街道\n" +
 //                "详细地址: 宝珍花园顺安街21号楼801");
-        textList.add("福建省莆田市仙游县发送到发斯蒂芬");
+        textList.add("重庆渝北区回兴街道松鹤路261号奥利给副食超市妈妈驿站代收");
         for (String text : textList) {
             UserInfo userInfo = smartParse.parseUserInfo(text);
             System.out.println(JSONUtil.toJsonStr(userInfo));
