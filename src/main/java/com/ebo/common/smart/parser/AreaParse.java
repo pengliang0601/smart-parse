@@ -10,10 +10,7 @@ import com.ebo.common.smart.TextHolder;
 import com.ebo.common.smart.domain.UserInfo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -190,7 +187,7 @@ public class AreaParse {
 
         text = ReUtil.replaceFirst(keyCharPattern, text, "");
 
-        List<AlternativeData> matchProvince = new ArrayList<>();
+        Map<String, AlternativeData> matchProvince = new HashMap<>();
         for (int endIndex = 0; endIndex < text.length(); endIndex++) {
             String keyword = StrUtil.subWithLength(text, 0, endIndex + 2);
 
@@ -202,11 +199,11 @@ public class AreaParse {
                     return ListUtil.of(new AlternativeData(data, parentData, level, keyword));
                 }
                 if (data.getName().contains(clearSpecialLat)) {
-                    matchProvince.add(new AlternativeData(data, parentData, level, keyword));
+                    matchProvince.put(data.getId(), new AlternativeData(data, parentData, level, keyword));
                 }
             }
         }
-        return matchProvince;
+        return new ArrayList<>(matchProvince.values());
     }
 
 }

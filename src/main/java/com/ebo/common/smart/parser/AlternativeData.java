@@ -3,6 +3,8 @@ package com.ebo.common.smart.parser;
 import com.ebo.common.smart.AddressDataLoader;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class AlternativeData {
 
@@ -36,5 +38,18 @@ public class AlternativeData {
 
     private String areaId;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        AlternativeData that = (AlternativeData) o;
+
+        return Objects.equals(areaId, that.areaId);
+    }
+
+    @Override
+    public int hashCode() {
+        return areaId != null ? areaId.hashCode() : 0;
+    }
 }
