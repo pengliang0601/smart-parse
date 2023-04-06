@@ -42,7 +42,7 @@ class SmartParseTest {
         //String text = "新疆阿克苏温宿县博孜墩柯尔克孜族乡吾斯塘博村一组306号";
         //String text = "天津市滨海新区北塘街道塘沽区心贻湾2-1402";
         //String text = "13593464918 马云\n";
-        String text = "新疆乌鲁木齐米东泰安路汉";
+        String text = "山东省青岛市市南区泰安路汉庭酒店";
         AddressInfo addressInfo = smartParse.parseAddressInfo(text);
         System.out.println(JSONUtil.toJsonStr(addressInfo));
     }

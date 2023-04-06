@@ -84,7 +84,16 @@ public class AreaParse {
         // 填充省市区
         if (result != null) {
             fillUserInfo(userInfo, result);
+            String removeBef = textHolder.getText();
             textHolder.removeText(result.getFullMatchValue());
+
+            if (removeBef.equals(textHolder.getText())) {
+                // 如果删除前和删除后还一样，则根据省市区来删除
+                textHolder.removeText(userInfo.getProvince());
+                textHolder.removeText(userInfo.getCity());
+                textHolder.removeText(userInfo.getCounty());
+                textHolder.removeText(userInfo.getStreet());
+            }
         }
 
 

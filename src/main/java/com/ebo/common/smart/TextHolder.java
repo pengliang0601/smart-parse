@@ -17,6 +17,9 @@ public class TextHolder {
     }
 
     public void removeText(String text) {
+        if (text == null) {
+            return;
+        }
         this.text = this.text.replace(text, "");
     }
 }
