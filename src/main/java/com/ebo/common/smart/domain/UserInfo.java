@@ -1,8 +1,10 @@
 package com.ebo.common.smart.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class UserInfo extends AddressInfo {
 
     /**

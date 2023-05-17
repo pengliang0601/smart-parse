@@ -47,6 +47,8 @@ public class AddressInfo {
 
     private String areaId;
 
+    private int level;
+
     public boolean isEmpty() {
         return StrUtil.isAllEmpty(province, provinceCode, city, cityCode, county, countyCode, street, streetCode, address) && areaId == null;
     }
