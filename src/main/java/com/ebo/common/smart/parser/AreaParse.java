@@ -77,8 +77,10 @@ public class AreaParse {
             result = getResult(areaList);
         } else if (!areaList.isEmpty()){
             result = getResult(streetList);
-        }else{
+        } else if (!cityList.isEmpty()){
             result = getResult(cityList);;
+        }else{
+            result = getResult(streetList);;
         }
 
         // 填充省市区
