@@ -76,13 +76,12 @@ public class SmartParse {
         UserInfo userInfo = new UserInfo();
         TextHolder textHolder = new TextHolder(text);
         List<String> textList = splitText(textHolder);
-
-        // 清除特殊字符
-        textList.replaceAll(content -> ReUtil.replaceAll(content, "[^\u4e00-\u9fa5A-Za-z0-9-]", ""));
-        // 匹配电话号码
-        mobileParser.parse(userInfo, textList, textHolder);
         // 解析名字
         nameParser.parse(userInfo, textList, textHolder);
+        // 清除特殊字符
+        textList.replaceAll(content -> ReUtil.replaceAll(content, RegexConstant.SPECIAL, ""));
+        // 匹配电话号码
+        mobileParser.parse(userInfo, textList, textHolder);
         // 解析地区址
         areaParse.parse(userInfo, textList, textHolder);
         return userInfo;

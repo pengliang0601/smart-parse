@@ -3,6 +3,7 @@ package com.ebo.common.smart.parser;
 import com.ebo.common.smart.AddressDataLoader;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Data
@@ -12,7 +13,7 @@ public class AlternativeData {
                            AlternativeData parent, int level, String matchValue) {
         this.data = data;
         this.matchValue = matchValue;
-        this.parent = parent;
+        this.parentId = data.getParentId();
         this.level = level;
         this.areaId = data.getId();
 
@@ -29,6 +30,7 @@ public class AlternativeData {
     private int level;
     private AddressDataLoader.Address data;
     private AlternativeData parent;
+    private Serializable parentId;
     private String matchValue;
 
     /**

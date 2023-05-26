@@ -6,6 +6,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ebo.common.smart.AddressDataLoader;
 import com.ebo.common.smart.AddressDataUtil;
+import com.ebo.common.smart.RegexConstant;
 import com.ebo.common.smart.TextHolder;
 import com.ebo.common.smart.domain.UserInfo;
 
@@ -31,14 +32,21 @@ public class AreaParse {
      */
     private Pattern keyCharPattern = Pattern.compile("^[" + PLACE_NAME_CHAR + "]+");
 
-    /**
-     * 特殊字符正则
-     */
-    private String specialChar = "[^\\u4e00-\\u9fa5A-Za-z0-9]";
-
+    private Map<Serializable, AddressDataLoader.Address> areaMap = new HashMap<>();
 
     public AreaParse(AddressDataLoader addressDataLoader) {
         this.addressDataLoader = addressDataLoader;
+        loadAddress(addressDataLoader.loadData());
+    }
+
+    private void loadAddress(List<AddressDataLoader.Address> addresses) {
+        if (CollUtil.isEmpty(addresses)) {
+            return;
+        }
+        for (AddressDataLoader.Address loadDatum : addresses) {
+            areaMap.put(loadDatum.getId(), loadDatum);
+            loadAddress(loadDatum.getChildren());
+        }
     }
 
     public void parse(UserInfo userInfo, List<String> textList, TextHolder textHolder) {
@@ -85,7 +93,7 @@ public class AreaParse {
 
         // 填充省市区
         if (result != null) {
-            fillUserInfo(userInfo, result);
+            fillUserInfo(userInfo, result.getData(), result.getLevel());
             String removeBef = textHolder.getText();
             textHolder.removeText(result.getFullMatchValue());
 
@@ -101,29 +109,30 @@ public class AreaParse {
 
     }
 
-    void fillUserInfo(UserInfo userInfo, AlternativeData result) {
-        if (result == null) {
+    void fillUserInfo(UserInfo userInfo, AddressDataLoader.Address result, int level) {
+        if (result == null || level < 0) {
             return;
         }
-        AddressDataLoader.Address data = result.getData();
-        if (result.getLevel() == 0) {
-            userInfo.setProvince(data.getName());
-            userInfo.setProvinceCode(data.getCode());
-        } else if (result.getLevel() == 1) {
-            userInfo.setCity(data.getName());
-            userInfo.setCityCode(data.getCode());
-        } else if (result.getLevel() == 2) {
-            userInfo.setCounty(data.getName());
-            userInfo.setCountyCode(data.getCode());
-        } else if (result.getLevel() == 3) {
-            userInfo.setStreet(data.getName());
-            userInfo.setStreetCode(data.getCode());
+        if (level == 0) {
+            userInfo.setProvince(result.getName());
+            userInfo.setProvinceCode(result.getCode());
+        } else if (level == 1) {
+            userInfo.setCity(result.getName());
+            userInfo.setCityCode(result.getCode());
+        } else if (level == 2) {
+            userInfo.setCounty(result.getName());
+            userInfo.setCountyCode(result.getCode());
+        } else if (level == 3) {
+            userInfo.setStreet(result.getName());
+            userInfo.setStreetCode(result.getCode());
         }
-        if (userInfo.getLevel() < result.getLevel()) {
-            userInfo.setLevel(result.getLevel());
-            userInfo.setAreaId(data.getId());
+        if (userInfo.getLevel() < level) {
+            userInfo.setLevel(level);
+            userInfo.setAreaId(result.getId());
         }
-        fillUserInfo(userInfo, result.getParent());
+        if (result.getParentId()!=null) {
+            fillUserInfo(userInfo, areaMap.get(result.getParentId().toString()), level - 1);
+        }
     }
 
     /**
@@ -203,7 +212,7 @@ public class AreaParse {
             String keyword = StrUtil.subWithLength(text, 0, endIndex + 2);
 
             // 清楚特殊字符后
-            String clearSpecialLat = ReUtil.replaceAll(keyword, specialChar, "");
+            String clearSpecialLat = ReUtil.replaceAll(keyword, RegexConstant.SPECIAL, "");
             for (AddressDataLoader.Address data : addressList) {
                 // 如果名称与地址一致，则为最有匹配
                 if (clearSpecialLat.equals(data.getName())) {
