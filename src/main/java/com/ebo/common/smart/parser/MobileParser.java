@@ -21,9 +21,9 @@ public class MobileParser {
             if (StrUtil.isEmpty(mobile)) {
                 continue;
             }
+            textList.set(i, textList.get(i).replace(mobile, ""));
             userInfo.setMobile(mobile);
-            textHolder.removeText(text);
-            textList.remove(i);
+            textHolder.removeText(mobile);
             return;
         }
     }
