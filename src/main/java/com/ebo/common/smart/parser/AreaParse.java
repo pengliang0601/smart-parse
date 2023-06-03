@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class AreaParse {
 
-    private AddressDataLoader addressDataLoader;
+    private final AddressDataLoader addressDataLoader;
 
     /**
      * 地名标识常量
@@ -32,22 +32,13 @@ public class AreaParse {
      */
     private Pattern keyCharPattern = Pattern.compile("^[" + PLACE_NAME_CHAR + "]+");
 
-    private Map<Serializable, AddressDataLoader.Address> areaMap = new HashMap<>();
+    private final Map<Serializable, AddressDataLoader.Address> areaMap = new HashMap<>();
+    private boolean initAreaMap = false;
 
     public AreaParse(AddressDataLoader addressDataLoader) {
         this.addressDataLoader = addressDataLoader;
-        loadAddress(addressDataLoader.loadData());
     }
 
-    private void loadAddress(List<AddressDataLoader.Address> addresses) {
-        if (CollUtil.isEmpty(addresses)) {
-            return;
-        }
-        for (AddressDataLoader.Address loadDatum : addresses) {
-            areaMap.put(loadDatum.getId(), loadDatum);
-            loadAddress(loadDatum.getChildren());
-        }
-    }
 
     public void parse(UserInfo userInfo, List<String> textList, TextHolder textHolder) {
 
@@ -131,9 +122,36 @@ public class AreaParse {
             userInfo.setAreaId(result.getId());
         }
         if (result.getParentId()!=null) {
-            fillUserInfo(userInfo, areaMap.get(result.getParentId().toString()), level - 1);
+            fillUserInfo(userInfo, getAddressByMap(result.getParentId().toString()), level);
         }
     }
+
+    public AddressDataLoader.Address getAddressByMap(String id) {
+        if (!initAreaMap) {
+            initAreaMap();
+        }
+        return areaMap.get(id);
+    }
+
+
+    private synchronized void initAreaMap() {
+        if (initAreaMap) {
+          return;
+        }
+        initAreaMap(addressDataLoader.loadData());
+        initAreaMap = true;
+    }
+
+    private void initAreaMap(List<AddressDataLoader.Address> addresses) {
+        if (CollUtil.isEmpty(addresses)) {
+            return;
+        }
+        for (AddressDataLoader.Address loadDatum : addresses) {
+            areaMap.put(loadDatum.getId(), loadDatum);
+            initAreaMap(loadDatum.getChildren());
+        }
+    }
+
 
     /**
      * 获取结果
