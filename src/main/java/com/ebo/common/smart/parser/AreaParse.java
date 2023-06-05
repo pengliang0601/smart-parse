@@ -122,7 +122,7 @@ public class AreaParse {
             userInfo.setAreaId(result.getId());
         }
         if (result.getParentId()!=null) {
-            fillUserInfo(userInfo, getAddressByMap(result.getParentId().toString()), level);
+            fillUserInfo(userInfo, getAddressByMap(result.getParentId().toString()), level - 1);
         }
     }
 
