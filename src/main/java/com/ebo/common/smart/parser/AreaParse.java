@@ -209,16 +209,6 @@ public class AreaParse {
             return Collections.emptyList();
         }
 
-        // 重庆有重庆城区和县区，所以这里size<=2
-        if (addressList.size() <= 2 ) {
-            // 取前两个字
-            List<AlternativeData> data = new ArrayList<>();
-            for (AddressDataLoader.Address address : addressList) {
-                data.add(new AlternativeData(address, parentData, level, ""));
-            }
-            return data;
-        }
-
         if (parentData != null) {
             text = text.replace(parentData.getFullMatchValue(), "");
         }
@@ -239,6 +229,18 @@ public class AreaParse {
                 if (data.getName().contains(clearSpecialLat)) {
                     matchProvince.put(data.getId(), new AlternativeData(data, parentData, level, keyword));
                 }
+            }
+        }
+
+        if (matchProvince.isEmpty()) {
+            // 重庆有重庆城区和县区，所以这里size<=2
+            if (addressList.size() <= 2 ) {
+                // 取前两个字
+                List<AlternativeData> data = new ArrayList<>();
+                for (AddressDataLoader.Address address : addressList) {
+                    data.add(new AlternativeData(address, parentData, level, ""));
+                }
+                return data;
             }
         }
         return new ArrayList<>(matchProvince.values());
