@@ -12,7 +12,6 @@ import com.ebo.common.smart.domain.UserInfo;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -21,17 +20,6 @@ import java.util.stream.Collectors;
 public class AreaParse {
 
     private final AddressDataLoader addressDataLoader;
-
-    /**
-     * 地名标识常量
-     */
-    public static final String PLACE_NAME_CHAR = "省市区县州街道镇乡特别行政自治";
-
-    /**
-     * 前缀字符特殊处理，匹配时候会自动处理掉符合正则的文字
-     */
-    private Pattern keyCharPattern = Pattern.compile("^[" + PLACE_NAME_CHAR + "]+");
-
     private final Map<Serializable, AddressDataLoader.Address> areaMap = new HashMap<>();
     private boolean initAreaMap = false;
 
@@ -47,7 +35,6 @@ public class AreaParse {
 
         // 获取详细地址
         userInfo.setAddress(textHolder.getText());
-
     }
 
 
@@ -203,8 +190,7 @@ public class AreaParse {
     }
 
 
-    public List<AlternativeData> match(String text, int level, List<AddressDataLoader.Address> addressList,
-                                       AlternativeData parentData) {
+    public List<AlternativeData> match(String text, int level, List<AddressDataLoader.Address> addressList, AlternativeData parentData) {
 
         if (CollUtil.isEmpty(addressList)) {
             return Collections.emptyList();
@@ -216,19 +202,20 @@ public class AreaParse {
 
         // 原文本
         String originalText = text;
+        // 去除非中文字符
+        String subText = ReUtil.replaceAll(text, RegexConstant.CHINESE, "");
 
         Map<String, AlternativeData> matchProvince = new HashMap<>();
-        for (int endIndex = 0; endIndex < text.length(); endIndex++) {
-            String keyword = StrUtil.subWithLength(text, 0, endIndex + 2);
+        for (int endIndex = 0; endIndex < subText.length(); endIndex++) {
 
-            // 清楚特殊字符后
+            String keyword = StrUtil.subWithLength(subText, 0, endIndex + 2);
             String clearSpecialLat = ReUtil.replaceAll(keyword, RegexConstant.SPECIAL, "");
+
             for (AddressDataLoader.Address data : addressList) {
                 // 如果名称与地址一致，则为最有匹配
                 if (clearSpecialLat.equals(data.getName())) {
                     return ListUtil.of(new AlternativeData(data, parentData, level, getMatchKeyword(originalText, data.getName())));
-                }
-                if (data.getName().contains(clearSpecialLat)) {
+                } else if (data.getName().contains(clearSpecialLat)) {
                     matchProvince.put(data.getId(), new AlternativeData(data, parentData, level, getMatchKeyword(originalText, keyword)));
                 }
             }
@@ -249,12 +236,12 @@ public class AreaParse {
     }
 
     String getMatchKeyword(String originalText, String text) {
+
         String matchText = StrUtil.subBefore(originalText, text, false) + text;
-
         String suffix = StrUtil.subAfter(originalText, matchText, false);
-        // 如果是以行政区的字符开头，则去掉
 
-        String group0 = ReUtil.getGroup0("([省市区县州街道镇乡特别行政自治])*", suffix);
+        // 如果是以行政区的字符开头，则去掉
+        String group0 = ReUtil.getGroup0(RegexConstant.PLACE_NAME, suffix);
         if (StrUtil.isNotEmpty(group0)) {
             return matchText + group0;
         }
