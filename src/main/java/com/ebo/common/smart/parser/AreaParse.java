@@ -74,12 +74,12 @@ public class AreaParse {
         AlternativeData result;
         if (streetList.isEmpty()) {
             result = getResult(areaList);
-        } else if (!areaList.isEmpty()){
+        } else if (!areaList.isEmpty()) {
             result = getResult(streetList);
-        } else if (!cityList.isEmpty()){
-            result = getResult(cityList);;
-        }else{
-            result = getResult(streetList);;
+        } else if (!cityList.isEmpty()) {
+            result = getResult(cityList);
+        } else {
+            result = getResult(streetList);
         }
 
         // 填充省市区
@@ -121,7 +121,7 @@ public class AreaParse {
             userInfo.setLevel(level);
             userInfo.setAreaId(result.getId());
         }
-        if (result.getParentId()!=null) {
+        if (result.getParentId() != null) {
             fillUserInfo(userInfo, getAddressByMap(result.getParentId().toString()), level - 1);
         }
     }
@@ -136,7 +136,7 @@ public class AreaParse {
 
     private synchronized void initAreaMap() {
         if (initAreaMap) {
-          return;
+            return;
         }
         initAreaMap(addressDataLoader.loadData());
         initAreaMap = true;
@@ -155,12 +155,13 @@ public class AreaParse {
 
     /**
      * 获取结果
+     *
      * @return
      */
 
     AlternativeData getResult(List<AlternativeData> dataList) {
 
-        if (CollUtil.isEmpty(dataList) ) {
+        if (CollUtil.isEmpty(dataList)) {
             return null;
         }
         AlternativeData data = dataList.get(0);
@@ -210,10 +211,11 @@ public class AreaParse {
         }
 
         if (parentData != null) {
-            text = text.replace(parentData.getFullMatchValue(), "");
+            text = text.replaceFirst(parentData.getFullMatchValue(), "");
         }
 
-        text = ReUtil.replaceFirst(keyCharPattern, text, "");
+        // 原文本
+        String originalText = text;
 
         Map<String, AlternativeData> matchProvince = new HashMap<>();
         for (int endIndex = 0; endIndex < text.length(); endIndex++) {
@@ -224,17 +226,17 @@ public class AreaParse {
             for (AddressDataLoader.Address data : addressList) {
                 // 如果名称与地址一致，则为最有匹配
                 if (clearSpecialLat.equals(data.getName())) {
-                    return ListUtil.of(new AlternativeData(data, parentData, level, keyword));
+                    return ListUtil.of(new AlternativeData(data, parentData, level, getMatchKeyword(originalText, data.getName())));
                 }
                 if (data.getName().contains(clearSpecialLat)) {
-                    matchProvince.put(data.getId(), new AlternativeData(data, parentData, level, keyword));
+                    matchProvince.put(data.getId(), new AlternativeData(data, parentData, level, getMatchKeyword(originalText, keyword)));
                 }
             }
         }
 
         if (matchProvince.isEmpty()) {
             // 重庆有重庆城区和县区，所以这里size<=2
-            if (addressList.size() <= 2 ) {
+            if (addressList.size() <= 2) {
                 // 取前两个字
                 List<AlternativeData> data = new ArrayList<>();
                 for (AddressDataLoader.Address address : addressList) {
@@ -244,6 +246,19 @@ public class AreaParse {
             }
         }
         return new ArrayList<>(matchProvince.values());
+    }
+
+    String getMatchKeyword(String originalText, String text) {
+        String matchText = StrUtil.subBefore(originalText, text, false) + text;
+
+        String suffix = StrUtil.subAfter(originalText, matchText, false);
+        // 如果是以行政区的字符开头，则去掉
+
+        String group0 = ReUtil.getGroup0("([省市区县州街道镇乡特别行政自治])*", suffix);
+        if (StrUtil.isNotEmpty(group0)) {
+            return matchText + group0;
+        }
+        return matchText;
     }
 
 }
