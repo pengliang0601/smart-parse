@@ -13,6 +13,10 @@ import java.util.List;
  */
 public class MobileParser {
 
+    /**
+     * 匹配手机号正则、包含虚拟虚拟号
+     */
+    String MOBILE = "(?:0|86|\\+86)?1[3-9]\\d{9}[-,]*\\d{0,5}#?";
 
     public void parse(UserInfo userInfo, List<String> textList, TextHolder textHolder) {
         for (int i = 0; i < textList.size(); i++) {
@@ -30,12 +34,9 @@ public class MobileParser {
 
     /**
      * 匹配手机号码
-     *
-     * @param text
-     * @return
      */
     public String match(String text) {
-        String mobile = ReUtil.getGroup0(RegexPool.MOBILE, text);
+        String mobile = ReUtil.getGroup0(MOBILE, text);
         if (StrUtil.isNotEmpty(mobile)) {
             return mobile;
         }
@@ -59,7 +60,6 @@ public class MobileParser {
         }
         return ReUtil.getGroup0(RegexPool.MOBILE_MO, text);
     }
-
 
 }
 
