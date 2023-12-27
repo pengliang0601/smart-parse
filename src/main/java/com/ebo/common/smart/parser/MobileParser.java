@@ -16,7 +16,7 @@ public class MobileParser {
     /**
      * 匹配手机号正则、包含虚拟虚拟号
      */
-    String MOBILE = "(?:0|86|\\+86)?1[3-9]\\d{9}[-,]*\\d{0,5}#?";
+    String MOBILE = "(?:0|86|\\+86)?1[3-9]\\d{9}([-,]+\\d{0,5}#?){0,1}";
 
     public void parse(UserInfo userInfo, List<String> textList, TextHolder textHolder) {
         for (int i = 0; i < textList.size(); i++) {
