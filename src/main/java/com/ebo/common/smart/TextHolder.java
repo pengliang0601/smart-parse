@@ -4,12 +4,12 @@ public class TextHolder {
 
     private String text;
 
-    public TextHolder(String text) {
-        this.text = text;
-    }
-
     public String getText() {
         return text;
+    }
+
+    public TextHolder(String text) {
+        this.text = text;
     }
 
     public void setText(String text) {

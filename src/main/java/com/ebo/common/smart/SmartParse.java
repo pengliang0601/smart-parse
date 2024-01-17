@@ -48,7 +48,7 @@ public class SmartParse {
                 .flatMap((Function<String, Stream<String>>) str -> {
                     if (ReUtil.contains(":[ ]?", str)) {
                         List<String> split = StrUtil.split(str, ':');
-                        if (split.size() == 2 && ReUtil.contains("姓名|地址|收货|人|手机|号码|地区", split.get(0))) {
+                        if (split.size() == 2 && ReUtil.contains("姓名|地址|收货人|手机|号码|地区", split.get(0))) {
                             return Stream.of(split.get(1));
                         }
                         return Stream.of(str);
