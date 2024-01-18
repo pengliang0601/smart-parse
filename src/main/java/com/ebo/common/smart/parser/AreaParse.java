@@ -245,6 +245,11 @@ public class AreaParse {
         if (StrUtil.isNotEmpty(group0)) {
             return matchText + group0;
         }
+        // 排除区和镇同名的情况，比如：甘肃嘉峪关市嘉峪关市雄关街道
+        if (suffix.startsWith(matchText)) {
+            matchText = matchText + matchText;
+        }
+
         return matchText;
     }
 
